@@ -6,7 +6,7 @@ header("Pragma: no-cache");
 header("Content-type: text/cache-manifest");
 ?>
 CACHE MANIFEST
-#rev001
+#rev002
 
 NETWORK:
 /api.php
