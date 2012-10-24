@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>3 Balance</title>
+    <script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+    <style type="text/css">
+        body {
+            background: black url(office-001.png) repeat top left;
+            margin: 0;
+            font-size: 100%;
+            font-size: 21px;
+            font-family: 'Helvetica Neue', Helvetica, Arial;
+        }
+
+        #loading_box {
+            background-color: #4A9CF0;
+            color: white;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 2.5;
+            padding: 0.2em 0.3em;
+            text-align: center;
+        }
+
+        #click_to_reload {
+            background-color: #4A9CF0;
+            color: white;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 2.5;
+            padding: 0.2em 0.3em;
+            text-align: center;
+        }
+        #click_to_reload_button {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .statbox {
+            display: -webkit-box;
+            background-color: black;
+            border-bottom: 1px #111 solid;
+            color: white;
+            line-height: 1.5;
+            padding: 0.2em 0.5em;
+            opacity: 0.85;
+
+            -webkit-box-shadow: 0px 4px 2px rgba(10, 10, 10, 0.5);
+            -moz-box-shadow:    0px 4px 2px rgba(10, 10, 10, 0.5);
+            box-shadow:         0px 4px 2px rgba(10, 10, 10, 0.5);
+
+            -webkit-box-align: baseline;
+            box-align: baseline;
+        }
+        .statbox + .statbox {
+            margin-top: 15px;
+        }
+        .number, .label {
+            -webkit-box-flex: 1;
+            display: block;
+        }
+        .number {
+            text-align: left;
+            font-size: 2em;
+            font-weight: bolder;
+        }
+        .label {
+            text-align: right;
+            vertical-align: baseline;
+            font-size: smaller;
+            text-transform: lowercase;
+        }
+
+        .good {
+            background-color: #009C00;
+        }
+        .warning {
+            background-color: #FF9400;
+        }
+        .bad {
+            background-color: #DD040F;
+        }
+        .checking {
+            opacity: 0.3;
+        }
+
+        /**
+         * Login styles
+         */
+        #panel_login {
+            padding: 1em;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            color: white;
+            font-size: 1.2em;
+            line-height: 1.5;
+            text-align: left;
+        }
+        input[type="text"], input[type="number"], input[type="password"] {
+            display: block;
+            line-height: 1;
+            font-size: 1.1em;
+            color: #555;
+            -webkit-box-sizing: border-box;
+            width: 100%;
+        }
+        #submit {
+            display: block;
+            -webkit-box-sizing: border-box;
+            width: 100%;
+            margin-top: 15px;
+            padding: 0.2em 0.3em;
+
+            background-color: rgba(74, 156, 240, 0.6);
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+            border-radius: 15px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Standard iPhone -->
+    <link rel="apple-touch-icon" sizes="57x57" href="touch-icon-iphone-57.png" />
+    <!-- Retina iPhone -->
+    <link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone-114.png" />
+    <!-- Standard iPad -->
+    <link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad-72.png" />
+    <!-- Retina iPad -->
+    <link rel="apple-touch-icon" sizes="144x144" href="touch-icon-ipad-144.png" />
+</head>
+<body onload="window.top.scrollTo(0,1);">
+    <div class="panel" id="panel_login" style="display: none">
+        <form id="login_form">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" pattern="[0-9]*" tabindex="1" />
+
+            <label for="username">Password</label>
+            <input type="password" name="password" id="password" tabindex="2" />
+
+            <span id="submit">Log in</span>
+        </form>
+    </div>
+    <div class="panel" id="panel_balance" style="display: none">
+        <div id="loading_box">
+            Checking balance&hellip;
+        </div>
+        <div id="click_to_reload" style="display: none">
+            <div id="click_to_reload_button">
+                &#8635; Refresh balance
+            </div>
+        </div>
+
+        <div id="statbox_container">
+            <div class="statbox flexi_units">
+                <span class="number" id="number_flexi_units">N/A</span> <span class="label">Flexiunits</span>
+            </div>
+            <div class="statbox days_remaining">
+                <span class="number" id="number_days_remaining">N/A</span> <span class="label">Days left</span>
+            </div>
+            <div class="statbox evening_weekend_minutes">
+                <span class="number" id="number_evening_weekend_minutes">N/A</span> <span class="label">Evening/Weekend Mins</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var user_token = localStorage["user_token"];
+        var $statbox_container = $("#statbox_container");
+        var $statbox_flexi_units = $(".flexi_units");
+        var $loading_box = $("#loading_box");
+        var $click_to_reload = $("#click_to_reload");
+
+        var check_balance = function () {
+            $statbox_container.addClass("checking");
+            $loading_box.show();
+            $click_to_reload.hide();
+
+            $.get("/api.php?action=check_balance&user_token="+user_token, function (data) {
+                $("#number_flexi_units").text(data.flexi_units);
+                $("#number_days_remaining").text(data.days_remaining);
+                $("#number_evening_weekend_minutes").text(data.evening_weekend_minutes);
+                var fraction_left = data.flexi_units / data.price_plan_flexi_units;
+                $statbox_flexi_units.removeClass("bad warning good");
+                if (fraction_left < 0.1) {
+                    $statbox_flexi_units.addClass("bad");
+                } else if (fraction_left < 0.25) {
+                    $statbox_flexi_units.addClass("warning");
+                } else {
+                    $statbox_flexi_units.addClass("good");
+                }
+                $statbox_container.removeClass("checking");
+                $loading_box.hide();
+                $click_to_reload.show();
+            });
+        };
+
+        var show_panel = function (panel_name) {
+            $(".panel").hide();
+            $("#panel_"+panel_name).show();
+        };
+
+        if (!user_token) {
+            show_panel("login");
+            $("#submit").on("click", function () {
+                $("#login_form").submit();
+            });
+            $("#login_form").on("submit", function (e) {
+                $("#submit").text("Logging in...");
+                $.post("/api.php", {
+                    action: "login",
+                    username: $("#username").val(),
+                    password: $("#password").val()
+                }, function (data) {
+                    if (data.user_token) {
+                        localStorage["user_token"] = data.user_token;
+                        user_token = localStorage["user_token"];
+                        show_panel("balance");
+                        check_balance();
+                    } else {
+                        alert("Login failed!");
+                    }
+                    $("#submit").text("Log in");
+                });
+                e.preventDefault();
+                return false;
+            });
+        } else {
+            show_panel("balance");
+            check_balance();
+        }
+
+        $("#click_to_reload").on("click", function () {
+            check_balance();
+        });
+    </script>
+</body>
+</html>
