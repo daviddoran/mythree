@@ -39,7 +39,7 @@
 
         .statbox {
             display: -webkit-box;
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.65);
             border-bottom: 1px #111 solid;
             color: white;
             line-height: 1.5;
@@ -159,6 +159,9 @@
             <div class="statbox flexi_units">
                 <span class="number" id="number_flexi_units">N/A</span> <span class="label">Flexiunits</span>
             </div>
+            <div class="statbox current_spend">
+                <span class="number" id="number_current_spend">N/A</span> <span class="label">Current spend</span>
+            </div>
             <div class="statbox days_remaining">
                 <span class="number" id="number_days_remaining">N/A</span> <span class="label">Days left</span>
             </div>
@@ -175,10 +178,18 @@
         var $loading_box = $("#loading_box");
         var $click_to_reload = $("#click_to_reload");
 
+        var number_or_na = function (number, prefix) {
+            if (number !== null) {
+                return (prefix || "")+number;
+            }
+            return "N/A";
+        };
+
         var update_balance_data = function (data) {
-            $("#number_flexi_units").text(data.flexi_units);
-            $("#number_days_remaining").text(data.days_remaining);
-            $("#number_evening_weekend_minutes").text(data.evening_weekend_minutes);
+            $("#number_flexi_units").text(number_or_na(data.flexi_units));
+            $("#number_days_remaining").text(number_or_na(data.days_remaining));
+            $("#number_current_spend").html(number_or_na(data.current_spend, "&euro; "));
+            $("#number_evening_weekend_minutes").text(number_or_na(data.evening_weekend_minutes));
             var fraction_left = data.flexi_units / data.price_plan_flexi_units;
             $statbox_flexi_units.removeClass("bad warning good");
             if (fraction_left < 0.1) {

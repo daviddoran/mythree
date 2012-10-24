@@ -99,6 +99,12 @@ class ThreeAllowance {
      */
     public $days_remaining = 0;
     /**
+     * Money spent outside the bill plan
+     *
+     * @var null|float
+     */
+    public $current_spend = null;
+    /**
      * Flexi units included in the price plan (null is Unlimited)
      *
      * @var null|int
@@ -213,6 +219,7 @@ class ThreeAllowanceCheck {
             $allowance_html = $this->curl->get($allowance_url);
 
             $allowance = self::parse_allowance_table($allowance_html);
+            $allowance->current_spend = self::parse_current_spend($allowance_html);
             $allowance->date = time();
             $price_plan = self::normalize_price_plan(self::parse_price_plan($allowance_html));
             if (isset($this->price_plans[$price_plan])) {
@@ -306,7 +313,7 @@ class ThreeAllowanceCheck {
         return $allowance;
     }
 
-    protected function parse_price_plan($html) {
+    protected static function parse_price_plan($html) {
         $regex = "@postpay price details.*?>(.*?)</a>@i";
         if (preg_match($regex, $html, $match)) {
             return $match[1];
@@ -314,7 +321,15 @@ class ThreeAllowanceCheck {
         return null;
     }
 
-    protected function normalize_price_plan($price_plan) {
+    protected static function parse_current_spend($html) {
+        $regex = '@&euro;[\s]*([0-9\.]+)@i';
+        if (preg_match_all($regex, $html, $matches)) {
+            return max($matches[1]);
+        }
+        return null;
+    }
+
+    protected static function normalize_price_plan($price_plan) {
         if ($price_plan) {
             return strtolower(preg_replace("/[^a-zA-Z]+/", "_", $price_plan));
         }
@@ -330,6 +345,7 @@ log_flexi_units=?,
 log_three_to_three_calls=?,
 log_evening_weekend_minutes=?,
 log_days_remaining=?,
+log_current_spend=?,
 log_price_plan_flexi_units=?,
 log_date_start=?,
 log_date_end=?
@@ -342,6 +358,7 @@ SQL;
             $allowance->three_to_three_calls,
             $allowance->evening_weekend_minutes,
             $allowance->days_remaining,
+            $allowance->current_spend,
             $allowance->price_plan_flexi_units,
             gmdate("Y-m-d H:i:s", $start_datetime),
             gmdate("Y-m-d H:i:s")
