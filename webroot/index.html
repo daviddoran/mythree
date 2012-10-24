@@ -175,28 +175,43 @@
         var $loading_box = $("#loading_box");
         var $click_to_reload = $("#click_to_reload");
 
-        var check_balance = function () {
-            $statbox_container.addClass("checking");
-            $loading_box.show();
-            $click_to_reload.hide();
+        var update_balance_data = function (data) {
+            $("#number_flexi_units").text(data.flexi_units);
+            $("#number_days_remaining").text(data.days_remaining);
+            $("#number_evening_weekend_minutes").text(data.evening_weekend_minutes);
+            var fraction_left = data.flexi_units / data.price_plan_flexi_units;
+            $statbox_flexi_units.removeClass("bad warning good");
+            if (fraction_left < 0.1) {
+                $statbox_flexi_units.addClass("bad");
+            } else if (fraction_left < 0.25) {
+                $statbox_flexi_units.addClass("warning");
+            } else {
+                $statbox_flexi_units.addClass("good");
+            }
+            $statbox_container.removeClass("checking");
+            $loading_box.hide();
+            $click_to_reload.show();
+        };
 
-            $.get("/api.php?action=check_balance&user_token="+user_token, function (data) {
-                $("#number_flexi_units").text(data.flexi_units);
-                $("#number_days_remaining").text(data.days_remaining);
-                $("#number_evening_weekend_minutes").text(data.evening_weekend_minutes);
-                var fraction_left = data.flexi_units / data.price_plan_flexi_units;
-                $statbox_flexi_units.removeClass("bad warning good");
-                if (fraction_left < 0.1) {
-                    $statbox_flexi_units.addClass("bad");
-                } else if (fraction_left < 0.25) {
-                    $statbox_flexi_units.addClass("warning");
-                } else {
-                    $statbox_flexi_units.addClass("good");
+        if (localStorage["data"]) {
+            update_balance_data(JSON.parse(localStorage["data"]));
+        }
+
+        var check_balance = function () {
+            if (navigator.onLine) {
+                $statbox_container.addClass("checking");
+                $loading_box.show();
+                $click_to_reload.hide();
+
+                $.get("/api.php?action=check_balance&user_token="+user_token, function (data) {
+                    localStorage["data"] = JSON.stringify(data);
+                    update_balance_data(data);
+                });
+            } else {
+                if (localStorage["data"]) {
+                    update_balance_data(JSON.parse(localStorage["data"]));
                 }
-                $statbox_container.removeClass("checking");
-                $loading_box.hide();
-                $click_to_reload.show();
-            });
+            }
         };
 
         var show_panel = function (panel_name) {
