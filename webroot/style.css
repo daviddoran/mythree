@@ -1,0 +1,134 @@
+body {
+    background: black url('images/dark-crosshatch.png') repeat top left;
+    margin: 0;
+    font: 21px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+#loading_box {
+    background: #4A9CF0;
+    color: #FFF;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    line-height: 2.5;
+    padding: .2em .3em;
+    text-align: center;
+}
+
+.click_to_reload {
+    background: #4A9CF0;
+    margin-bottom: 20px;
+    line-height: 2.5;
+    padding: .4em .6em;
+}
+
+.click_to_reload button {
+    display: block;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    padding: .2em .3em;
+    background: rgba(0, 0, 0, 0.2);
+    color: #FFF;
+    font-size: 1.2em;
+    border: 0;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.statbox {
+    display: -webkit-box;
+    background: rgba(0, 0, 0, 0.45);
+    border-bottom: 1px #111 solid;
+    color: #FFF;
+    line-height: 1.5;
+    padding: .2em .5em;
+    opacity: 0.85;
+
+    -webkit-box-shadow: 0px 4px 2px rgba(10, 10, 10, 0.5);
+    -moz-box-shadow: 0px 4px 2px rgba(10, 10, 10, 0.5);
+    box-shadow: 0px 4px 2px rgba(10, 10, 10, 0.5);
+
+    -webkit-box-align: baseline;
+    box-align: baseline;
+}
+
+.statbox + .statbox {
+    margin-top: 15px;
+}
+
+.number, .label {
+    -webkit-box-flex: 1;
+    display: block;
+}
+
+.number {
+    text-align: left;
+    font-size: 2em;
+    font-weight: bolder;
+}
+
+.label {
+    text-align: right;
+    vertical-align: baseline;
+    font-size: smaller;
+    text-transform: lowercase;
+}
+
+.good {
+    background: #009C00;
+}
+
+.warning {
+    background: #FF9400;
+}
+
+.bad {
+    background: #DD040F;
+}
+
+.checking {
+    opacity: 0.3;
+}
+
+/**
+ * Login styles
+ */
+.panel form {
+    padding: 1em;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #FFF;
+    font-size: 1.2em;
+    line-height: 1.5;
+    text-align: left;
+}
+
+input[type="text"], input[type="number"], input[type="password"] {
+    display: block;
+    line-height: 1;
+    font-size: 1.1em;
+    color: #555;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+}
+
+button[type="submit"] {
+    display: block;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    margin-top: 15px;
+    padding: .2em .3em;
+
+    background: rgba(74, 156, 240, 0.6);
+    color: #FFF;
+    font-size: 1.1em;
+    text-align: center;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+
+    line-height: 30px;
+    border: 0;
+}

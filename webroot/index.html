@@ -1,269 +1,162 @@
 <!DOCTYPE html>
-<html lang="en" manifest="/cache.manifest.php">
+<html lang="en">
+<!-- manifest="/cache.manifest.php" -->
 <head>
-    <meta charset='utf-8'>
+<head>
+    <meta charset="utf-8">
     <title>3 Balance</title>
-    <script type="text/javascript" src="jquery-1.8.2.min.js"></script>
-    <style type="text/css">
-        body {
-            background: black url(office-001.png) repeat top left;
-            margin: 0;
-            font-size: 100%;
-            font-size: 21px;
-            font-family: 'Helvetica Neue', Helvetica, Arial;
-        }
-
-        #loading_box {
-            background-color: #4A9CF0;
-            color: white;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            line-height: 2.5;
-            padding: 0.2em 0.3em;
-            text-align: center;
-        }
-
-        #click_to_reload {
-            background-color: #4A9CF0;
-            color: white;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            line-height: 2.5;
-            padding: 0.2em 0.3em;
-            text-align: center;
-        }
-        #click_to_reload_button {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-        }
-
-        .statbox {
-            display: -webkit-box;
-            background-color: rgba(0, 0, 0, 0.45);
-            border-bottom: 1px #111 solid;
-            color: white;
-            line-height: 1.5;
-            padding: 0.2em 0.5em;
-            opacity: 0.85;
-
-            -webkit-box-shadow: 0px 4px 2px rgba(10, 10, 10, 0.5);
-            -moz-box-shadow:    0px 4px 2px rgba(10, 10, 10, 0.5);
-            box-shadow:         0px 4px 2px rgba(10, 10, 10, 0.5);
-
-            -webkit-box-align: baseline;
-            box-align: baseline;
-        }
-        .statbox + .statbox {
-            margin-top: 15px;
-        }
-        .number, .label {
-            -webkit-box-flex: 1;
-            display: block;
-        }
-        .number {
-            text-align: left;
-            font-size: 2em;
-            font-weight: bolder;
-        }
-        .label {
-            text-align: right;
-            vertical-align: baseline;
-            font-size: smaller;
-            text-transform: lowercase;
-        }
-
-        .good {
-            background-color: #009C00;
-        }
-        .warning {
-            background-color: #FF9400;
-        }
-        .bad {
-            background-color: #DD040F;
-        }
-        .checking {
-            opacity: 0.3;
-        }
-
-        /**
-         * Login styles
-         */
-        #panel_login {
-            padding: 1em;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-            color: white;
-            font-size: 1.2em;
-            line-height: 1.5;
-            text-align: left;
-        }
-        input[type="text"], input[type="number"], input[type="password"] {
-            display: block;
-            line-height: 1;
-            font-size: 1.1em;
-            color: #555;
-            -webkit-box-sizing: border-box;
-            width: 100%;
-        }
-        #submit {
-            display: block;
-            -webkit-box-sizing: border-box;
-            width: 100%;
-            margin-top: 15px;
-            padding: 0.2em 0.3em;
-
-            background-color: rgba(74, 156, 240, 0.6);
-            color: white;
-            font-size: 1.1em;
-            text-align: center;
-            border-radius: 15px;
-        }
-    </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- Standard iPhone -->
-    <link rel="apple-touch-icon" sizes="57x57" href="touch-icon-iphone-57.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="images/iphone-57.png">
     <!-- Retina iPhone -->
-    <link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone-114.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/iphone-114.png">
     <!-- Standard iPad -->
-    <link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad-72.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/ipad-72.png">
     <!-- Retina iPad -->
-    <link rel="apple-touch-icon" sizes="144x144" href="touch-icon-ipad-144.png" />
-    <link href="/add2home/add2home.css" rel="stylesheet" type="text/css" />
+    <link rel="apple-touch-icon" sizes="144x144" href="images/ipad-144.png">
+    <link href="add2home/add2home.min.css" rel="stylesheet" type="text/css">
 </head>
 <body onload="window.top.scrollTo(0,1);">
-    <div class="panel" id="panel_login" style="display: none">
-        <form id="login_form">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" pattern="[0-9]*" tabindex="1" />
+    <div data-bind="visible: !state()" style="display: none" class="panel">
+        <form data-bind="submit: login">
+            <label>Username <input type="text" name="username" id="username" pattern="[0-9]*" tabindex="1"></label>
+            <label>Password <input type="password" name="password" id="password" tabindex="2"></label>
 
-            <label for="username">Password</label>
-            <input type="password" name="password" id="password" tabindex="2" />
-
-            <span id="submit">Log in</span>
+            <button data-bind="click: login" type="submit">Log in</button>
         </form>
     </div>
-    <div class="panel" id="panel_balance" style="display: none">
-        <div id="loading_box">
+    <div data-bind="visible: (state()=='loaded' || state()=='loading')" style="display: none" class="panel">
+        <div data-bind="visible: (state()=='loading')" style="display: none" id="loading_box">
             Checking balance&hellip;
         </div>
-        <div id="click_to_reload" style="display: none">
-            <div id="click_to_reload_button">
-                &#8635; Refresh balance
-            </div>
-        </div>
 
-        <div id="statbox_container">
-            <div class="statbox flexi_units">
-                <span class="number" id="number_flexi_units">N/A</span> <span class="label">Flexiunits</span>
+        <div data-bind="if: (state()=='loaded')">
+            <div data-bind="click: check_balance" class="click_to_reload">
+                <button>&#8635; Refresh balance</button>
             </div>
-            <div class="statbox current_spend">
-                <span class="number" id="number_current_spend">N/A</span> <span class="label">Current spend</span>
+
+            <div data-bind="css: flexi_units_class" class="statbox">
+                <span data-bind="text: balance.flexi_units.number_or_na()" class="number">N/A</span>
+                <span class="label">Flexiunits left</span>
             </div>
-            <div class="statbox days_remaining">
-                <span class="number" id="number_days_remaining">N/A</span> <span class="label">Days left</span>
+            <div class="statbox">
+                <span data-bind="html: balance.current_spend.number_or_na('&euro; ')" class="number">N/A</span>
+                <span class="label">Current spend</span>
             </div>
-            <div class="statbox evening_weekend_minutes">
-                <span class="number" id="number_evening_weekend_minutes">N/A</span> <span class="label">Evening/Weekend Mins</span>
+            <div class="statbox">
+                <span data-bind="text: balance.days_remaining.number_or_na()" class="number">N/A</span>
+                <span class="label">Days left</span>
+            </div>
+            <div class="statbox">
+                <span data-bind="text: balance.evening_weekend_minutes.number_or_na()" class="number">N/A</span>
+                <span class="label">Evening/Weekend Mins</span>
             </div>
         </div>
     </div>
 
-    <script type="text/javascript">
-        var user_token = localStorage["user_token"];
-        var $statbox_container = $("#statbox_container");
-        var $statbox_flexi_units = $(".flexi_units");
-        var $loading_box = $("#loading_box");
-        var $click_to_reload = $("#click_to_reload");
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.2.1/knockout-min.js"></script>
+    <script type="text/javascript" src="ajax.js"></script>
 
-        var number_or_na = function (number, prefix) {
-            if (number !== null) {
-                return (prefix || "")+number;
-            }
-            return "N/A";
+    <script type="text/javascript">
+        ko.observable.fn.number_or_na = function (prefix) {
+            var self = this;
+            return ko.computed(function () {
+                var value = self();
+                if (value != null) {
+                    return (prefix || "")+value;
+                }
+                return "N/A";
+            });
+        };
+
+        var pagemodel = (function () {
+            var self = this;
+            self.state = ko.observable();
+            self.user_token = ko.observable(localStorage["user_token"]);
+            self.balance = {
+                price_plan_flexi_units: ko.observable(),
+                flexi_units: ko.observable(),
+                current_spend: ko.observable(),
+                days_remaining: ko.observable(),
+                evening_weekend_minutes: ko.observable()
+            };
+            self.flexi_units_class = ko.computed(function () {
+                if (self.balance.price_plan_flexi_units()) {
+                    var fraction_left = self.balance.flexi_units() / self.balance.price_plan_flexi_units();
+                    if (fraction_left < 0.1) {
+                        return "bad";
+                    } else if (fraction_left < 0.25) {
+                        return "warning";
+                    } else {
+                        return "good";
+                    }
+                }
+                return "";
+            });
+            self.update = function (data) {
+                data = data || {};
+                for (var key in self.balance) {
+                    if (self.balance.hasOwnProperty(key) && data.hasOwnProperty(key)) {
+                        self.balance[key](data[key]);
+                    }
+                }
+                self.state("loaded");
+            };
+            return self;
+        })();
+
+        var login = function () {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var post_data = "action=login&username="+encodeURI(username)+"&password="+encodeURI(password);
+            quirksmode.sendRequest("/api.php", function (req) {
+                var data = JSON.parse(req.responseText);
+                if (data.user_token) {
+                    localStorage["user_token"] = data.user_token;
+                    pagemodel.user_token(localStorage["user_token"]);
+                    pagemodel.state("loaded");
+                    check_balance();
+                } else {
+                    alert("Login failed!");
+                }
+            }, post_data);
         };
 
         var update_balance_data = function (data) {
-            $("#number_flexi_units").text(number_or_na(data.flexi_units));
-            $("#number_days_remaining").text(number_or_na(data.days_remaining));
-            $("#number_current_spend").html(number_or_na(data.current_spend, "&euro; "));
-            $("#number_evening_weekend_minutes").text(number_or_na(data.evening_weekend_minutes));
-            var fraction_left = data.flexi_units / data.price_plan_flexi_units;
-            $statbox_flexi_units.removeClass("bad warning good");
-            if (fraction_left < 0.1) {
-                $statbox_flexi_units.addClass("bad");
-            } else if (fraction_left < 0.25) {
-                $statbox_flexi_units.addClass("warning");
-            } else {
-                $statbox_flexi_units.addClass("good");
+            data = data || {};
+            var balance = pagemodel.balance;
+            for (var key in balance) {
+                if (balance.hasOwnProperty(key) && data.hasOwnProperty(key)) {
+                    balance[key](data[key]);
+                }
             }
-            $statbox_container.removeClass("checking");
-            $loading_box.hide();
-            $click_to_reload.show();
+            pagemodel.state("loaded");
         };
 
-        if (localStorage["data"]) {
-            update_balance_data(JSON.parse(localStorage["data"]));
-        }
-
         var check_balance = function () {
+            pagemodel.state("loading");
             if (navigator.onLine) {
-                $statbox_container.addClass("checking");
-                $loading_box.show();
-                $click_to_reload.hide();
-
-                $.get("/api.php?action=check_balance&user_token="+user_token, function (data) {
+                quirksmode.sendRequest("/api.php?action=check_balance&user_token="+pagemodel.user_token(), function (xhr) {
+                    var data = JSON.parse(xhr.responseText);
                     localStorage["data"] = JSON.stringify(data);
-                    update_balance_data(data);
+                    pagemodel.update(data);
                 });
             } else {
                 if (localStorage["data"]) {
-                    update_balance_data(JSON.parse(localStorage["data"]));
+                    pagemodel.update(JSON.parse(localStorage["data"]));
                 }
             }
         };
 
-        var show_panel = function (panel_name) {
-            $(".panel").hide();
-            $("#panel_"+panel_name).show();
-        };
-
-        if (!user_token) {
-            show_panel("login");
-            $("#submit").on("click", function () {
-                $("#login_form").submit();
-            });
-            $("#login_form").on("submit", function (e) {
-                $("#submit").text("Logging in...");
-                $.post("/api.php", {
-                    action: "login",
-                    username: $("#username").val(),
-                    password: $("#password").val()
-                }, function (data) {
-                    if (data.user_token) {
-                        localStorage["user_token"] = data.user_token;
-                        user_token = localStorage["user_token"];
-                        show_panel("balance");
-                        check_balance();
-                    } else {
-                        alert("Login failed!");
-                    }
-                    $("#submit").text("Log in");
-                });
-                e.preventDefault();
-                return false;
-            });
-        } else {
-            show_panel("balance");
+        //If there's a user token then refresh the balance data
+        if (pagemodel.user_token()) {
             check_balance();
         }
 
-        $("#click_to_reload").on("click", function () {
-            check_balance();
-        });
+        ko.applyBindings(pagemodel);
     </script>
-    <script type="text/javascript" src="/add2home/add2home.js"></script>
+    <script type="text/javascript" src="add2home/add2home.min.js"></script>
 </body>
 </html>
