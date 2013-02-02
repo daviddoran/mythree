@@ -56,8 +56,9 @@
         </div>
     </div>
 
+    <!-- Inlined ajax.min.js -->
+    <script type="text/javascript">(function(){var a=[function(){return new XMLHttpRequest();},function(){return new ActiveXObject("Msxml2.XMLHTTP");},function(){return new ActiveXObject("Msxml3.XMLHTTP");},function(){return new ActiveXObject("Microsoft.XMLHTTP");}];var b=function(){var f=false;for(var d=0;d<a.length;d++){try{f=a[d]();}catch(g){continue;}break;}return f;};var c={};c.sendRequest=function(e,h,d){var f=b();if(!f){return;}var g=(d)?"POST":"GET";f.open(g,e,true);f.setRequestHeader("X-Requested-With","XMLHttpRequest");if(d){f.setRequestHeader("Content-Type","application/x-www-form-urlencoded");}f.onreadystatechange=function(){if(f.readyState!==4){return;}if(f.status!==200&&f.status!==304){return;}h(f);};if(f.readyState===4){return;}f.send(d);};window.quirksmode=c;})();</script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.2.1/knockout-min.js"></script>
-    <script type="text/javascript" src="ajax.min.js"></script>
 
     <script type="text/javascript">
         ko.observable.fn.number_or_na = function (prefix) {
