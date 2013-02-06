@@ -1,8 +1,8 @@
 <?php
 
-class AllowanceParseException extends Exception {}
+namespace Three;
 
-class ThreeAllowance {
+class Allowance {
     /**
      * @var int
      */

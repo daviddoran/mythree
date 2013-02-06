@@ -1,8 +1,10 @@
 <?php
 
-class ThreeAllowanceCheck {
+namespace Three;
+
+class AllowanceCheck {
     /**
-     * @var Pimple
+     * @var \Pimple
      */
     protected $config;
 
@@ -28,7 +30,7 @@ class ThreeAllowanceCheck {
     const LOGIN_URL = "https://sso.three.ie/mylogin/?service=https%3A%2F%2Fmy3account.three.ie%2FThreePortal%2Fappmanager%2FThree%2FMy3ROI";
     const ALLOWANCE_URL_BASE = "https://my3account.three.ie/My_allowance?ticket=";
 
-    public function __construct(Pimple $config) {
+    public function __construct(\Pimple $config) {
         $this->config = $config;
     }
 
@@ -66,7 +68,7 @@ class ThreeAllowanceCheck {
                 $allowance->days_remaining = intval($match[1]);
             }
         } else {
-            throw new Exception("Could not get redirect session ticket to request current allowance.");
+            throw new \Exception("Could not get redirect session ticket to request current allowance.");
         }
 
         $this->log($credentials["username"], $allowance, $start_time);
@@ -96,13 +98,13 @@ class ThreeAllowanceCheck {
 
     /**
      * @param $html
-     * @return ThreeAllowance
+     * @return Allowance
      * @throws AllowanceParseException
      */
     protected static function parse_allowance_table ($html) {
         $pairs = array();
 
-        $dom = new domDocument;
+        $dom = new \domDocument;
         @$dom->loadHTML($html);
         $dom->preserveWhiteSpace = false;
         $table = $dom->getElementById('allowanceRemBody');
@@ -127,7 +129,7 @@ class ThreeAllowanceCheck {
             }
         }
 
-        $allowance = new ThreeAllowance;
+        $allowance = new Allowance;
 
         foreach ($pairs as $pair) {
             if (preg_match("/3 to 3/i", $pair["label"])) {
@@ -174,7 +176,7 @@ class ThreeAllowanceCheck {
         return false;
     }
 
-    protected function log($username, ThreeAllowance $allowance, $start_datetime) {
+    protected function log($username, Allowance $allowance, $start_datetime) {
         $sql = 'INSERT INTO log
                 SET username=?,
                     flexi_units=?, price_plan_flexi_units=?,

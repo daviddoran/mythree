@@ -1,5 +1,7 @@
 <?php
 
+namespace Three;
+
 /**
  * Persistent curl class (retains cookies between requests)
  */

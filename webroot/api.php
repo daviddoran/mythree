@@ -2,10 +2,6 @@
 
 require "../vendor/autoload.php";
 
-spl_autoload_register(function ($classname) {
-    require dirname(__DIR__) . "/library/" . $classname . ".php";
-});
-
 function json($obj) {
     header("Content-type: application/json;charset=utf-8");
     die(json_encode($obj));
@@ -24,7 +20,7 @@ if (file_exists("../config.php")) {
     error("Config file doesn't exist.", "ServerError");
 }
 
-$app = new ThreeApp($config);
+$app = new Three\App($config);
 header("Content-Type: application/json;charset=utf-8");
 echo $app->handle(
     (isset($_REQUEST["action"]) ? $_REQUEST["action"] : null),

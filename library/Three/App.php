@@ -1,6 +1,11 @@
 <?php
 
-class ThreeApp {
+namespace Three;
+
+use \Exception;
+use \Pimple;
+
+class App {
     /**
      * @var Pimple
      */
@@ -43,7 +48,7 @@ class ThreeApp {
             throw new Exception("Username or password empty.");
         }
 
-        $check = new ThreeAllowanceCheck($this->config);
+        $check = new AllowanceCheck($this->config);
         $login_succeeded = $check->check_login($username, $password);
         if ($login_succeeded) {
             $ut = UserToken::create_from_credentials($this->config, array(
@@ -73,7 +78,7 @@ class ThreeApp {
         }
         $ut = UserToken::find($this->config, $params["user_token"]);
         if ($ut) {
-            $check = new ThreeAllowanceCheck($this->config);
+            $check = new AllowanceCheck($this->config);
             return array("balance" => $check->get_allowance($ut), "success" => true);
         }
         throw new Exception("User token invalid.");

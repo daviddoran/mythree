@@ -1,5 +1,7 @@
 <?php
 
+namespace Three;
+
 /**
  * A pseudorandom token sent to clients for authentication
  *
@@ -21,7 +23,7 @@
  */
 class UserToken {
     /**
-     * @var Pimple
+     * @var \Pimple
      */
     protected $config = null;
 
@@ -37,13 +39,13 @@ class UserToken {
      *
      * Need to use create_from_credentials(...) for new tokens.
      */
-    private function __construct(Pimple $config) {
+    private function __construct(\Pimple $config) {
         $this->config = $config;
     }
 
-    public static function create_from_credentials(Pimple $config, array $credentials) {
+    public static function create_from_credentials(\Pimple $config, array $credentials) {
         if (empty($credentials["username"]) or empty($credentials["password"])) {
-            throw new Exception("Username or password empty (can't create token).");
+            throw new \Exception("Username or password empty (can't create token).");
         }
 
         $username = $credentials["username"];
@@ -70,31 +72,31 @@ class UserToken {
             $new_token->token = $token;
             return $new_token;
         }
-        throw new Exception("Failed to create new token.");
+        throw new \Exception("Failed to create new token.");
     }
 
-    public static function find(Pimple $config, $token) {
+    public static function find(\Pimple $config, $token) {
         $sql = "SELECT * FROM user_token WHERE token=:token";
         $stmt = $config["pdo"]->prepare($sql);
         $result = $stmt->execute(array("token" => $token));
         if ($result) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $ut = new UserToken($config);
             $ut->token = $row["token"];
             return $ut;
         }
-        throw new Exception("Database query error finding token.");
+        throw new \Exception("Database query error finding token.");
     }
 
     public function get_credentials() {
         $sql = "SELECT username,password FROM user_token WHERE token=:token";
         $stmt = $this->config["pdo"]->prepare($sql);
         $stmt->execute(array("token" => $this->token));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row) {
             return array("username" => $row["username"], "password" => $row["password"]);
         }
-        throw new Exception("Failed to get username and password.");
+        throw new \Exception("Failed to get username and password.");
     }
 
     public function delete() {
