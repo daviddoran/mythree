@@ -1,8 +1,18 @@
 <?php
 
-$host = "127.0.0.1";
-$dbname = "three";
-$username = "root";
-$password = "";
+$config = new Pimple;
 
-return new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+$config["db_host"] = "127.0.0.1";
+$config["db_name"] = "three";
+$config["db_username"] = "root";
+$config["db_password"] = "";
+
+$config["pdo"] = $config->share(function ($c) {
+    return new PDO("mysql:host={$c['db_host']};dbname={$c['db_name']}", $c["db_username"], $c["db_password"]);
+});
+
+$config["curl"] = function () {
+    return new Curl();
+};
+
+return $config;

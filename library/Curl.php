@@ -1,60 +1,64 @@
 <?php
 
+/**
+ * Persistent curl class (retains cookies between requests)
+ */
 class Curl {
-    protected $cookieFile = null;
-    protected $counter = 0;
-    public static $debugging = false;
+    /**
+     * @var resource
+     */
+    protected $curl_handle;
 
     public function __construct() {
+        $this->curl_handle = curl_init();
+        curl_setopt_array($this->curl_handle, array(
+            CURLOPT_CONNECTTIMEOUT => 30,
+            CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_COOKIEFILE => "/dev/null"
+        ));
     }
 
-    public function set_cookie_file_name($cookie_file_name) {
-        $this->cookieFile = $cookie_file_name;
-        return $this;
-    }
-
+    /**
+     * Simple GET request
+     *
+     * @param string $url
+     * @return string
+     */
     public function get($url) {
-        return $this->_request($url);
+        return $this->request($url);
     }
 
+    /**
+     * Simple POST request
+     *
+     * @param string $url
+     * @param array $post
+     * @return string
+     */
     public function post($url, $post = array()) {
-        return $this->_request($url, $post);
+        return $this->request($url, $post);
     }
 
-    protected function _request($url, $post = array()) {
-        $curl_connection = curl_init($url);
-        //set options
-        curl_setopt($curl_connection, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($curl_connection, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-        curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curl_connection, CURLOPT_COOKIEJAR, $this->cookieFile);
-        curl_setopt($curl_connection, CURLOPT_COOKIEFILE, $this->cookieFile);
-        //set data to be posted
-        if ($post) {
-            $post_string = http_build_query($post, null, "&");
-            curl_setopt($curl_connection, CURLOPT_POSTFIELDS, $post_string);
+    /**
+     * Make a GET/POST curl request
+     *
+     * @param string $url
+     * @param array $post
+     * @return string
+     */
+    protected function request($url, $post = array()) {
+        curl_setopt($this->curl_handle, CURLOPT_URL, $url);
+
+        if (!empty($post)) {
+            curl_setopt($this->curl_handle, CURLOPT_POST, 1);
+            curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, http_build_query($post, null, "&"));
+        } else {
+            curl_setopt($this->curl_handle, CURLOPT_POST, 0);
+            curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, null);
         }
-
-        self::debug("Requesting " . $url);
-        //perform our request
-        $result = curl_exec($curl_connection);
-
-        if (self::$debugging) {
-            //file_put_contents($this->counter."-". preg_replace("/[^a-zA-Z0-9_\-]+/", "_", curl_getinfo($curl_connection, CURLINFO_EFFECTIVE_URL)) . ".html", $result);
-        }
-
-        self::debug(" ... Done. \n");
-
-        curl_close($curl_connection);
-        $this->counter++;
-        return $result;
-    }
-
-    protected static function debug($message) {
-        if (self::$debugging) {
-            error_log($message);
-        }
+        return curl_exec($this->curl_handle);
     }
 }

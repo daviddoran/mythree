@@ -141,8 +141,12 @@
             if (navigator.onLine) {
                 quirksmode.sendRequest("/api.php?action=check_balance&user_token="+pagemodel.user_token(), function (xhr) {
                     var data = JSON.parse(xhr.responseText);
-                    localStorage["data"] = JSON.stringify(data);
-                    pagemodel.update(data);
+                    if (data.success) {
+                        localStorage["data"] = JSON.stringify(data["balance"]);
+                        pagemodel.update(data["balance"]);
+                    } else {
+                        alert(data["error"]["message"]);
+                    }
                 });
             } else {
                 if (localStorage["data"]) {
