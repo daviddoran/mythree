@@ -51,11 +51,11 @@ class App {
         $check = new AllowanceCheck($this->config);
         $login_succeeded = $check->check_login($username, $password);
         if ($login_succeeded) {
-            $ut = UserToken::create_from_credentials($this->config, array(
+            $user_token = UserToken::create_from_credentials($this->config, array(
                 "username" => $username,
                 "password" => $password
             ));
-            return array("user_token" => $ut->token, "success" => true);
+            return array("user_token" => $user_token->token, "success" => true);
         }
         throw new Exception("Login to My3 system failed.");
     }
@@ -65,8 +65,8 @@ class App {
             throw new Exception("Missing user_token parameter.");
         }
 
-        $ut = UserToken::find($this->config, $params["user_token"]);
-        if ($ut->delete()) {
+        $user_token = UserToken::find($this->config, $params["user_token"]);
+        if ($user_token->delete()) {
             return array("message" => "Logged out successfully.", "success" => true);
         }
         throw new Exception("Error deleting user token.");
@@ -76,10 +76,10 @@ class App {
         if (empty($params["user_token"])) {
             throw new Exception("Missing user_token parameter.");
         }
-        $ut = UserToken::find($this->config, $params["user_token"]);
-        if ($ut) {
+        $user_token = UserToken::find($this->config, $params["user_token"]);
+        if ($user_token) {
             $check = new AllowanceCheck($this->config);
-            return array("balance" => $check->get_allowance($ut), "success" => true);
+            return array("balance" => $check->get_allowance($user_token), "success" => true);
         }
         throw new Exception("User token invalid.");
     }

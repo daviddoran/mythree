@@ -4,12 +4,12 @@ require "../vendor/autoload.php";
 
 function json($obj) {
     header("Content-type: application/json;charset=utf-8");
-    die(json_encode($obj));
+    return json_encode($obj);
 }
 
 function error($message, $code = "Error") {
     error_log("Three Allowance error: " . $message);
-    json(array(
+    return json(array(
         "error" => array("code" => $code, "message" => $message)
     ));
 }
@@ -17,7 +17,7 @@ function error($message, $code = "Error") {
 if (file_exists("../config.php")) {
     $config = (include "../config.php");
 } else {
-    error("Config file doesn't exist.", "ServerError");
+    die(error("Config file doesn't exist.", "ServerError"));
 }
 
 $app = new Three\App($config);

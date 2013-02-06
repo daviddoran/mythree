@@ -1,5 +1,7 @@
 <?php
 
+use Three\Curl;
+
 $config = new Pimple;
 
 $config["db_host"] = "127.0.0.1";

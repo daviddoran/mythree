@@ -81,9 +81,9 @@ class UserToken {
         $result = $stmt->execute(array("token" => $token));
         if ($result) {
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $ut = new UserToken($config);
-            $ut->token = $row["token"];
-            return $ut;
+            $user_token = new UserToken($config);
+            $user_token->token = $row["token"];
+            return $user_token;
         }
         throw new \Exception("Database query error finding token.");
     }
