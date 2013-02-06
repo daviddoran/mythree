@@ -176,11 +176,11 @@ class ThreeAllowanceCheck {
 
     protected function log($username, ThreeAllowance $allowance, $start_datetime) {
         $sql = 'INSERT INTO log
-                SET log_username=?,
-                    log_flexi_units=?, log_price_plan_flexi_units=?,
-                    log_three_to_three_calls=?, log_evening_weekend_minutes=?,
-                    log_days_remaining=?, log_current_spend=?,
-                    log_date_start=?, log_date_end=?';
+                SET username=?,
+                    flexi_units=?, price_plan_flexi_units=?,
+                    three_to_three_calls=?, evening_weekend_minutes=?,
+                    days_remaining=?, current_spend=?,
+                    date_start=?, date_end=?';
         $stmt = $this->config["pdo"]->prepare($sql);
         $stmt->execute(array(
             $username,
