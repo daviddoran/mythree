@@ -1,0 +1,6 @@
+{
+    "require":{
+        "phpmd/phpmd":"1.4.0",
+        "pimple/pimple":"1.0.*"
+    }
+}

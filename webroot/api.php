@@ -1,13 +1,16 @@
 <?php
 
-function __autoload($classname) {
-    require dirname(__DIR__)."/library/".$classname.".php";
-}
+require "../vendor/autoload.php";
+
+spl_autoload_register(function ($classname) {
+    require dirname(__DIR__) . "/library/" . $classname . ".php";
+});
 
 function json($obj) {
     header("Content-type: application/json;charset=utf-8");
     die(json_encode($obj));
 }
+
 function error($message, $code = "Error") {
     error_log("Three Allowance error: " . $message);
     json(array(
