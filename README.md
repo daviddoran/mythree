@@ -69,6 +69,12 @@ This app should always be served over SSL/TLS.
 Developed with PHP 5.3.15 (Apache mod_php). Should work with any PHP 5.3+ and on most servers.
 The app was tested with MySQL 5.5 but it may work with other SQL databases as it uses [PDO](http://php.net/manual/en/book.pdo.php).
 
+## TODO
+
+- Make the database optional (alternatives might be flat files, Redis, etc);
+- Improve error handling and error reporting;
+- Use dependency injection in more places (e.g. to implement caching).
+
 ## License
 
 This project is released under the MIT License - see the LICENSE file for details.
