@@ -9,3 +9,5 @@ This app is made up of two parts:
 
 - A client-side JavaScript app for small screens;
 - A PHP API that uses cURL to scrape the current usage information from three.ie.
+
+This software is released under the MIT License given in the LICENSE file.
