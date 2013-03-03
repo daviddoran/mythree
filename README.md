@@ -10,4 +10,47 @@ This app is made up of two parts:
 - A client-side JavaScript app for small screens;
 - A PHP API that uses cURL to scrape the current usage information from three.ie.
 
-This software is released under the MIT License given in the LICENSE file.
+## Getting started
+
+First, clone the repository's files:
+
+    git clone git://github.com/daviddoran/mythree.git
+
+Install [composer](http://getcomposer.org/) (if you don't have it installed globally):
+
+    curl -sS https://getcomposer.org/installer | php
+
+Download the app's PHP dependencies using composer:
+
+    php composer.phar install
+
+Create a new database (for example):
+
+    mysqladmin -u root create three3
+
+Import the database tables:
+
+    mysql -u root three3 < schema.sql
+
+Create the config file:
+
+    cp config.sample.php config.php
+
+Edit config.php with your database name and connection settings.
+
+Now you just need to serve the webroot/ folder using Apache, nginx, etc.
+
+If you have PHP 5.4 installed then you can use the built-in web server for testing:
+
+    cd webroot
+    php -S localhost:8000
+
+And then go to http://localhost:8000/ in your browser.
+
+## Screenshots
+
+![My3 Screenshots](http://daviddoran.github.com/mythree/screenshots.png "My3 Screenshots")
+
+## License
+
+This project is released under the MIT License - see the LICENSE file for details.
