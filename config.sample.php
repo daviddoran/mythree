@@ -5,7 +5,7 @@ use Three\Curl;
 $config = new Pimple;
 
 $config["db_host"] = "127.0.0.1";
-$config["db_name"] = "three";
+$config["db_name"] = "my3";
 $config["db_username"] = "root";
 $config["db_password"] = "";
 

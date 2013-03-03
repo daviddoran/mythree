@@ -26,11 +26,11 @@ Download the app's PHP dependencies using composer:
 
 Create a new database (for example):
 
-    mysqladmin -u root create three3
+    mysqladmin -u root create my3
 
 Import the database tables:
 
-    mysql -u root three3 < schema.sql
+    mysql -u root my3 < schema.sql
 
 Create the config file:
 
