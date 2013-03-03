@@ -51,6 +51,10 @@ And then go to http://localhost:8000/ in your browser.
 
 ![My3 Screenshots](http://daviddoran.github.com/mythree/screenshots.png "My3 Screenshots")
 
+## Requirements
+
+Developed with PHP 5.3.15 (Apache mod_php). Should work with any PHP 5.3+ and on most servers.
+
 ## License
 
 This project is released under the MIT License - see the LICENSE file for details.
