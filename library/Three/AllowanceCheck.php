@@ -29,6 +29,7 @@ class AllowanceCheck {
     const LOGIN_TICKET_URL = "https://sso.three.ie/mylogin/?service=https%3A%2F%2Fmy3account.three.ie%2FThreePortal%2Fappmanager%2FThree%2FMy3ROI";
     const LOGIN_URL = "https://sso.three.ie/mylogin/?service=https%3A%2F%2Fmy3account.three.ie%2FThreePortal%2Fappmanager%2FThree%2FMy3ROI";
     const ALLOWANCE_URL_BASE = "https://my3account.three.ie/My_allowance?ticket=";
+    const ALLOWANCE_URL = "https://my3account.three.ie/My_allowance";
 
     public function __construct(\Pimple $config) {
         $this->config = $config;
@@ -50,7 +51,7 @@ class AllowanceCheck {
             'lt'       => $lt_token
         ));
 
-        $my_allowance_html = $curl->get("https://my3account.three.ie/My_allowance");
+        $my_allowance_html = $curl->get(self::ALLOWANCE_URL);
         $redirect_ticket = self::get_ticket($my_allowance_html);
         if ($redirect_ticket) {
             $allowance_url = self::ALLOWANCE_URL_BASE . $redirect_ticket;
